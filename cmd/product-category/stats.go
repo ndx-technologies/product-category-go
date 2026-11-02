@@ -315,10 +315,17 @@ func StatsCmd(args []string) error {
 		return fmt.Errorf("cannot list translation files: %w", err)
 	}
 
+	fileWidth := len("File")
+	for _, translation := range translations {
+		if len(translation) > fileWidth {
+			fileWidth = len(translation)
+		}
+	}
+
 	tw := fmtx.TableWriter{
 		Out: os.Stdout,
 		Cols: []fmtx.TablCol{
-			{Header: "File", Width: 10},
+			{Header: "File", Width: fileWidth},
 			{Header: "Coverage", Width: 14, Alignment: fmtx.AlignRight},
 			{Header: "Percent", Width: 7, Alignment: fmtx.AlignRight},
 			{Header: "Missing", Width: 7, Alignment: fmtx.AlignRight},
