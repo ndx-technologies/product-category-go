@@ -29,7 +29,6 @@ Work in a directory holding categories.txt and the translation files.
 5. 'validate -dir <dir>'
 6. 'stats -dir <dir>' — expect full coverage in every file, with Depth, Empty and Missing at zero.
 7. 'bump-version -dir <dir>'
-8. commit in 'product-category' repo, make new tag and push.sh
 `
 
 var commands = map[string]command{
