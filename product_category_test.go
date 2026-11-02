@@ -187,7 +187,7 @@ func TestNormalizeCategory(t *testing.T) {
 		{"Food\\Dairy\\Milk", "Food / Dairy / Milk"},
 		{"Food / Dairy\\Milk", "Food / Dairy / Milk"},
 		{"  Food  /  Dairy  /  Milk  ", "Food / Dairy / Milk"},
-		{"Food / Dairy / Milk / Whole / Organic", "Food / Dairy / Milk / Whole"},
+		{"Food / Dairy / Milk / Whole / Organic", "Food / Dairy / Milk / Whole / Organic"},
 		{"Food // Dairy / / Milk", "Food / Dairy / Milk"},
 		{"Food", "Food"},
 		{"Food/Dairy", "Food / Dairy"},

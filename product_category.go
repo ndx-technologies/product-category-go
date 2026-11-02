@@ -167,7 +167,6 @@ func NormalizeCategory(category ProductCategory) ProductCategory {
 	}
 
 	s := category.String()
-
 	s = strings.TrimSpace(s)
 	s = strings.ReplaceAll(s, ">", Separator)
 	s = strings.ReplaceAll(s, "\\", Separator)
@@ -179,16 +178,7 @@ func NormalizeCategory(category ProductCategory) ProductCategory {
 		}
 	}
 
-	if len(parts) > MaxDepth {
-		parts = parts[:MaxDepth]
-	}
-
 	category, _ = ProductCategoryFromString(strings.Join(parts, separatorWithSpace))
-
-	if len(category) > MaxLength {
-		return ProductCategory("")
-	}
-
 	return category
 }
 
