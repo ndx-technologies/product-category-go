@@ -23,8 +23,8 @@ Tools for working with NDX Product Category taxonomy.
 Work in a directory holding categories.txt and the translation files.
 
 1. 'assign-ids -dir <dir>' — write the ID column of every file, 1..N in file order. Run it once, when a file carries no IDs or stale ones. This is the only command that reads row position, and it refuses to run unless every file holds the same number of categories. IDs are reassigned on every 'normalize', so they differ between versions: join on category path, never on ID.
-2. Edit categories.txt with the change. Additions, renames and deletions all work, since 'normalize' rebuilds the list from scratch.
-3. Apply the same change to every translation file, giving each new category the same ID it carries in categories.txt. Row order does not matter: translations are joined on ID.
+2. Edit categories.txt.. Additions, renames and deletions all work, since 'normalize' rebuilds the list from scratch.
+3. Edit categories_<lang>.txt. Use 'translate -dir <dir> -glossary <glossary.csv>' to help with translations.
 4. 'normalize -dir <dir>' — sorts by path, renumbers 1..N, and remaps translations. It fails if any category has no translation; pass '-allow_partial' to write a knowingly incomplete result.
 5. 'validate -dir <dir>'
 6. 'stats -dir <dir>' — expect full coverage in every file, with Depth, Empty and Missing at zero.
@@ -36,6 +36,7 @@ var commands = map[string]command{
 	"validate":     {docShort: DocShortValidate, run: ValidateCmd},
 	"assign-ids":   {docShort: DocShortAssignIDs, run: AssignIDsCmd},
 	"normalize":    {docShort: DocShortNormalize, run: NormalizeCmd},
+	"translate":    {docShort: DocShortTranslate, run: TranslateCmd},
 	"bump-version": {docShort: DocShortBumpVersion, run: BumpVersionCmd},
 }
 
