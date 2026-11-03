@@ -232,6 +232,13 @@ func TranslateCmd(args []string) error {
 		slices.Sort(missing)
 
 		memo := make(map[pcat.ProductCategory]string, len(missing))
+		// Seed the memo with the rows the file already carries, so a child inherits the
+		// parent's own wording instead of a recomposed one that may differ.
+		for i, id := range translated.IDs {
+			if c, ok := canonicalByID[id]; ok {
+				memo[c] = translated.Categories[i].String()
+			}
+		}
 		source := make(map[string]int)
 		unresolved := make(map[string]pcat.ProductCategory)
 
@@ -254,6 +261,25 @@ func TranslateCmd(args []string) error {
 		}
 		sort.Strings(names)
 
+		// Two names under one parent can translate to the same word, and the file would then
+		// carry a path twice. That is refused here rather than left for the reader to fail on.
+		seen := make(map[string]bool, len(translated.Categories)+len(rows))
+		for _, category := range translated.Categories {
+			seen[category.String()] = true
+		}
+		kept := rows[:0]
+		var conflicts []string
+		for _, row := range rows {
+			if seen[row[1]] {
+				id, _ := pcat.ProductCategoryIDFromString(row[0])
+				conflicts = append(conflicts, row[1]+"  <- "+canonicalByID[id].String())
+				continue
+			}
+			seen[row[1]] = true
+			kept = append(kept, row)
+		}
+		rows = kept
+
 		fmt.Printf("\n== %s: %d rows\n", filename, len(translated.Categories))
 		fmt.Printf("   missing %d\n", len(missing))
 		for _, key := range sortedKeys(source) {
@@ -267,7 +293,15 @@ func TranslateCmd(args []string) error {
 			}
 			fmt.Printf("      %s  (e.g. %s)\n", name, unresolved[name])
 		}
-		if len(names) > 0 {
+		fmt.Printf("   duplicate translations %d\n", len(conflicts))
+		for i, conflict := range conflicts {
+			if i >= maxPrint {
+				fmt.Printf("      ... and %d more\n", len(conflicts)-maxPrint)
+				break
+			}
+			fmt.Printf("      %s\n", conflict)
+		}
+		if len(names) > 0 || len(conflicts) > 0 {
 			failed = append(failed, filename)
 		}
 
